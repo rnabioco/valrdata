@@ -5,7 +5,7 @@ output: github_document
 ```{r, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>)"
+  comment = "#>)")
 library(valr)
 library(dplyr)
 ```
@@ -14,4 +14,4 @@ library(dplyr)
 
 [![Build Status](https://travis-ci.org/rnabioco/valrdata.svg?branch=master)](https://travis-ci.org/rnabioco/valrdata)
 
-
+An R datapackage for perfoming fluid and interactive genomics analysis using valr. 

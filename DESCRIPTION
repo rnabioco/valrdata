@@ -1,0 +1,15 @@
+Package: valrdata
+Title: Datasets for conductin fluid interactive genomics analysis with R
+Version: 0.0.0.9000
+Authors@R: person("Jay", "Hesselberth", email = "jay.hesselberth@gmail.com", role = c("aut", "cre")),
+           person("Kent", "Riemondy", email = "kent.riemondy@gmail.com", role = c("aut"))
+Description: A collection of datasets for demonstrating fluid 
+             interactive genomics analysis with the valr package.
+Depends: R (>= 3.3.1)
+License: MIT + file 
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1
+URL: http://github.com/rnabioco/valrdata/
+BugReports: https://github.com/rnabioco/valrdata/issues
+Encoding: UTF-8
+LazyData: true

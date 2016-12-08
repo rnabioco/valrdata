@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+data-raw/dnase/*
+data-raw/segway/*
+data-raw/repeats/*

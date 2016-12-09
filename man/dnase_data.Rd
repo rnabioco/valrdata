@@ -12,7 +12,7 @@
   \item{name}{DnaseI hypersensitivity score}
 }}
 \source{
-\url"https://s3.amazonaws.com/bedtools-tutorials/web/maurano.dnaseI.tgz"
+\url{"https://s3.amazonaws.com/bedtools-tutorials/web/maurano.dnaseI.tgz"}
 }
 \usage{
 dnase_data
@@ -24,7 +24,7 @@ A dataset containing DNaseI hypersensitivity data from 20 human cell types
 Maurano et al. Systematic Localization of Common Disease-Associated Variation in Regulatory DNA. Science. 2012. Vol. 337 no. 6099 pp. 1190-1195.
 }
 \seealso{
-\url "http://www.sciencemag.org/content/337/6099/1190.short"
+\url{"http://www.sciencemag.org/content/337/6099/1190.short"}
 }
 \keyword{datasets}
 

@@ -14,7 +14,7 @@
   \item{...}{segway label of each cell type in the interval}
 }}
 \source{
-\url"http://noble.gs.washington.edu/proj/encyclopedia/segway_encyclopedia.bed.gz"
+\url{"http://noble.gs.washington.edu/proj/encyclopedia/segway_encyclopedia.bed.gz"}
 }
 \usage{
 segway_data
@@ -26,7 +26,7 @@ A dataset containing segway annotations for 164 human cell types
 Libbrecht MW, Rodriguez O, Hoffman MM, Bilmes JA, Noble WS. 2016. A unified encyclopedia of human functional elements through fully automated annotation of 164 human cell types. Biorxiv preprint: http://dx.doi.org/10.1101/086025.
 }
 \seealso{
-\url "http://noble.gs.washington.edu/proj/encyclopedia/"
+\url{"http://noble.gs.washington.edu/proj/encyclopedia/"}
 }
 \keyword{datasets}
 

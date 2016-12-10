@@ -16,7 +16,7 @@
   \item{repFamily}{repeat family}
 }}
 \source{
-\url{"http://genome.ucsc.edu/cgi-bin/hgTables"}
+\url{http://genome.ucsc.edu/cgi-bin/hgTables}
 }
 \usage{
 repeat_data

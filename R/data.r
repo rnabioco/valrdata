@@ -13,8 +13,8 @@
 #' }
 #' @references
 #' Libbrecht MW, Rodriguez O, Hoffman MM, Bilmes JA, Noble WS. 2016. A unified encyclopedia of human functional elements through fully automated annotation of 164 human cell types. Biorxiv preprint: http://dx.doi.org/10.1101/086025.
-#' @seealso \url{"http://noble.gs.washington.edu/proj/encyclopedia/"}
-#' @source \url{"http://noble.gs.washington.edu/proj/encyclopedia/segway_encyclopedia.bed.gz"}
+#' @seealso \url{http://noble.gs.washington.edu/proj/encyclopedia/}
+#' @source \url{http://noble.gs.washington.edu/proj/encyclopedia/segway_encyclopedia.bed.gz}
 "segway_data"
 
 
@@ -31,8 +31,8 @@
 #' }
 #' @references
 #' Maurano et al. Systematic Localization of Common Disease-Associated Variation in Regulatory DNA. Science. 2012. Vol. 337 no. 6099 pp. 1190-1195.
-#' @seealso \url{"http://www.sciencemag.org/content/337/6099/1190.short"}
-#' @source \url{"https://s3.amazonaws.com/bedtools-tutorials/web/maurano.dnaseI.tgz"}
+#' @seealso \url{http://www.sciencemag.org/content/337/6099/1190.short}
+#' @source \url{https://s3.amazonaws.com/bedtools-tutorials/web/maurano.dnaseI.tgz}
 "dnase_data"
 
 
@@ -52,7 +52,7 @@
 #'   \item{repClass}{repeat class}
 #'   \item{repFamily}{repeat family}
 #' }
-#' @source \url{"http://genome.ucsc.edu/cgi-bin/hgTables"}
+#' @source \url{http://genome.ucsc.edu/cgi-bin/hgTables}
 "repeat_data"
 
 

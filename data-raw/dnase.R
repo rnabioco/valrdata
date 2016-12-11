@@ -14,6 +14,14 @@ if (!file.exists("data-raw/dnase")) {
 }
 
 dnase_files <- dir('data-raw/dnase', pattern = 'merge.bed.gz', full.names = TRUE)
-dnase_data <- map(dnase_files, ~read_bed(.x, n_fields = 4))
+dnase_data <- map(dnase_files, ~read_bedgraph(.x, n_fields = 4))
 
-use_data(dnase_data, compress = "xz")
+names(dnase_data) <- dnase_files %>%
+  basename(.) %>%
+  map(., ~str_split(.x, '\\.', simplify = T)[1]) %>%
+  map(., ~str_split(.x, '-', simplify = T)[1]) %>%
+  flatten_chr() %>%
+  str_replace('^f', '') %>%
+  str_c(str_c('-', seq(length(.))))
+
+use_data(dnase_data, compress = "xz", overwrite = TRUE)

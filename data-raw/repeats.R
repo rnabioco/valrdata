@@ -5,7 +5,7 @@ library(dplyr)
 
 if (!file.exists("data-raw/repeats")) {
   dir.create("data-raw/repeats")
-  ucsc <- db_ucsc("hg38")
+  ucsc <- db_ucsc("hg19")
   repeats <- tbl(ucsc, "rmsk")
   repeats <- select(repeats,
                     genoName,
@@ -16,11 +16,11 @@ if (!file.exists("data-raw/repeats")) {
                     strand,
                     repClass,
                     repFamily) %>% collect(n = Inf)
-  write_tsv(repeats, "data-raw/repeats/hg38_rmsk.bed")
-  gzip("data-raw/repeats/hg38_rmsk.bed")
+  write_tsv(repeats, "data-raw/repeats/hg19_rmsk.bed")
+  gzip("data-raw/repeats/hg19_rmsk.bed")
 }
 
-repeat_data <- readr::read_tsv("data-raw/repeats/hg38_rmsk.bed.gz")
+repeat_data <- readr::read_tsv("data-raw/repeats/hg19_rmsk.bed.gz")
 
 repeat_data <- dplyr::rename(repeat_data,
                       chrom = genoName,
@@ -29,4 +29,4 @@ repeat_data <- dplyr::rename(repeat_data,
                       name  = repName,
                       score = swScore
                       )
-use_data(repeat_data, compress = "xz")
+use_data(repeat_data, compress = "xz", overwrite = TRUE)

@@ -22,7 +22,7 @@
 repeat_data
 }
 \description{
-A dataset containing annotations for repeat classes in the hg38 human genome, as
+A dataset containing annotations for repeat classes in the hg19 human genome, as
 annotated by RepeatMasker
 }
 \keyword{datasets}

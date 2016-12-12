@@ -38,7 +38,7 @@
 
 #' Human repetitive elements
 #'
-#' A dataset containing annotations for repeat classes in the hg38 human genome, as
+#' A dataset containing annotations for repeat classes in the hg19 human genome, as
 #' annotated by RepeatMasker
 #'
 #' @format A data frame with 5,520,017 rows and 8 variables:
@@ -55,5 +55,19 @@
 #' @source \url{http://genome.ucsc.edu/cgi-bin/hgTables}
 "repeat_data"
 
-
+#' Human RefSeq annotations
+#'
+#' A dataset containing RefSeq gene annotations for hg19
+#'
+#' @format A data frame with 24,062 rows and 6 variables:
+#' \describe{
+#'   \item{chrom}{chromosome}
+#'   \item{start}{start position}
+#'   \item{end}{end position}
+#'   \item{name}{gene symbol}
+#'   \item{score}{0}
+#'   \item{strand}{strand}
+#' }
+#' @source \url{http://genome.ucsc.edu/cgi-bin/hgTables}
+"hg19_genes"
 

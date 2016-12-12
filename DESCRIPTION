@@ -9,6 +9,17 @@ Description: A collection of datasets for demonstrating fluid
              interactive genomics analysis with the valr package.
 Depends: 
     R (>= 3.3.1)
+Imports:
+    shinydashboard,
+    valr,
+    dplyr (>= 0.5.0),
+    purrr,
+    stringr,
+    ggplot2
+Suggests:
+    devtools,
+    R.utils,
+    readr
 License: MIT + file 
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

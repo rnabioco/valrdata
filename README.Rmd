@@ -14,4 +14,4 @@ library(dplyr)
 
 [![Build Status](https://travis-ci.org/rnabioco/valrdata.svg?branch=master)](https://travis-ci.org/rnabioco/valrdata)
 
-An R datapackage for perfoming fluid and interactive genomics analysis using valr. 
+A `Shiny` app and R datapackage for demonstrating genome analysis with [`valr`](https://github.com/rnabioco/valr) 

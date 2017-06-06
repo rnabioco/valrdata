@@ -9,4 +9,3 @@ launch_valr_app()
 \description{
 launch valrdata shiny demo
 }
-

@@ -71,3 +71,18 @@
 #' @source \url{http://genome.ucsc.edu/cgi-bin/hgTables}
 "hg19_genes"
 
+#' BEDTools Tutorial files
+#'
+#' A list of BED and genome files used by the BEDTools tutorial
+#'
+#' @format A list of dataframes
+#' \describe{
+#'   \item{cpg}{dataframe with bed intervals of CPG islands in human genome}
+#'   \item{exons}{dataframe with bed intervals for exons in human genome}
+#'   \item{gwas}{dataframe of  bed intervals of disease associated snps in human genome}
+#'   \item{hesc_chromHmm}{dataframe of bed intervals with predicted functions for intervals in human genome}
+#'   \item{genome}{dataframe of chromosome length for human genome}
+#' }
+#' @source \url{http://quinlanlab.org/tutorials/bedtools/bedtools.html}
+#'
+"tutorial_files"

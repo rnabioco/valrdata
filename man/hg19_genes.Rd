@@ -23,4 +23,3 @@ hg19_genes
 A dataset containing RefSeq gene annotations for hg19
 }
 \keyword{datasets}
-

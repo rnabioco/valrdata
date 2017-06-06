@@ -27,4 +27,3 @@ Maurano et al. Systematic Localization of Common Disease-Associated Variation in
 \url{http://www.sciencemag.org/content/337/6099/1190.short}
 }
 \keyword{datasets}
-

@@ -8,6 +8,8 @@ library(stringr)
 source("utilities.r")
 source("code_demos.r")
 
+options(shiny.maxRequestSize = 100*1024^2)
+
 #----------------------------------------------------------------
 # Input Files
 #use dnase_data and hg19_genes from valrdata
@@ -27,7 +29,7 @@ chroms <- c(chroms, "All Chromosomes")
 
 # generate vector of datasets
 datasets <- names(valrdata::dnase_data)
-datasets <- c(datasets, "Average All Datasets")
+dataset_options <- c(datasets, "Average All Datasets")
 #---------------------------------------------------------------
 ui <- dashboardPage(
 
@@ -70,28 +72,67 @@ ui <- dashboardPage(
     tabItems(
       tabItem(tabName = "table",
         fluidRow(
-          box(DT::dataTableOutput("bed_data"),
+          box(
+            selectInput("select_dataset_for_dt",
+                        label = "Datasets to Display:",
+                        choices = datasets,
+                        selected = datasets[1],
+                        multiple = FALSE
+                        ),
+            DT::dataTableOutput("bed_data"),
               width = 12)
-        )),
+          )
+        ),
 
       tabItem(tabName = "usr_data",
         fluidRow(
           column(width = 6,
                  box(
-                   fileInput("usr_file", "Choose Bed File"
-                            # accept = c(
-                            #   "text/csv",
-                            #   "text/comma-separated-values,text/plain",
-                            #   ".csv")
+                   tags$p("Bedgraph must be tab deliminated and contain 4 columns,\n
+                           a header line is allowed if it begins with #,\n
+                          gzipped files are allowed if they end in .gz"),
+
+                   fileInput("usr_bedgraph", "Select bedgraph File"),
+
+                   tags$p("Input gene annotations should be in BED format. \n
+                          The TSS and TES will be determined based on the start and end values"),
+
+                   fileInput("usr_bed", "Select BED File containing genes"),
+
+                   numericInput("n_fields", "Number of fields in BED file:", 3, min = 3, max = 100),
+                   actionButton(
+                       "file_load_Btn",
+                       "Load & Analyze",
+                       class = "btn-primary"
                    ),
-                   tags$hr(),
-                   numericInput("n_fields", "n_fields:", 3, min = 3, max = 100),
                    width = 12
                  )
-              )),
+              ),
+          column(width= 6,
+                 box(selectInput("tx_position",
+                                  "Region to plot",
+                                  c("TSS",
+                                    "TES"), selected = "TSS"),
+                      sliderInput("usr_window", "Window Size:", 100, 1000, 200),
+                      sliderInput("usr_region", "Region Size:", 2500, 20000, 10000),
+                      width = 12
+                  )
+             )
+        ),
+
         fluidRow(
-          box(DT::dataTableOutput("usr_data"),
-              width = 12)
+          column(width= 6,
+                 box(DT::dataTableOutput("usr_bgdata"),
+                     width = 12)),
+          column(width= 6,
+                 box(DT::dataTableOutput("usr_beddata"),
+                     width = 12))
+          ),
+
+        fluidRow(
+          title = "Coverage Plot",
+          plotOutput("usr_coverage"),
+          width = 12
         )),
 
       tabItem(tabName = "plot",
@@ -106,8 +147,8 @@ ui <- dashboardPage(
                             selected = "chr22",
                             multiple = TRUE),
                 selectInput("select_dataset", label = "Datasets to Display:",
-                            choices = datasets,
-                            selected = datasets[1],
+                            choices = dataset_options,
+                            selected = dataset_options[1],
                             multiple = TRUE),
                 width = 12
               )
@@ -135,13 +176,21 @@ ui <- dashboardPage(
 
 
 
-#-----------------------------------------------------
+#----------------------------------------------------------------
 #Server
 server <- function(input, output) {
 
+  reactData <- reactiveValues(usr_dataset = NULL)
+  output$usr_data_uploaded <- reactive({ FALSE })
+
   # a large table, reative to input$show_vars
   output$bed_data = DT::renderDataTable({
-    genes
+    in_dataset <- input$select_dataset_for_dt
+    if(is.null(in_dataset)){
+      valrdata::dnase_data[[1]]
+    } else {
+      valrdata::dnase_data[[in_dataset]]
+    }
   }, extensions = c('Buttons'),
   options = savingOptions,
   filter = 'top',
@@ -150,25 +199,84 @@ server <- function(input, output) {
                    target = 'row'),
   rownames = FALSE)
 
+  observeEvent(input$file_load_Btn, {
+    #import data and  assign to reactData
 
-  output$usr_data <- DT::renderDataTable({
+    # need to rename file for compressed input
+    # shiny strips off the extension from input files
+    # readr::read_tsv checks for .gz for decompression
+    # https://github.com/tidyverse/readr/issues/491
+
+    .usr_bgfile <- input$usr_bedgraph
+    input_file_format <- tools::file_ext(.usr_bgfile$name)
+    new_file_name <- paste0(.usr_bgfile$datapath, ".", input_file_format)
+    file.rename(.usr_bgfile$datapath, new_file_name)
+    bg <- read_bedgraph(new_file_name)
+
+    .usr_bedfile <- input$usr_bed
+    input_file_format <- tools::file_ext(.usr_bedfile$name)
+    new_file_name <- paste0(.usr_bedfile$datapath, ".", input_file_format)
+    file.rename(.usr_bedfile$datapath, new_file_name)
+    bed <- read_bed(new_file_name, n_fields = input$n_fields)
+
+    reactData$usr_bedgraph <- bg
+    reactData$usr_bed <- bed
+
+    output$datasetChosen <- reactive({ TRUE })
+
+    # generate datatable for visualization
+    output$usr_bgdata <- DT::renderDataTable({
     # input$file1 will be NULL initially. After the user selects
-    # and uploads a file, it will be a data frame with 'name',
     # 'size', 'type', and 'datapath' columns. The 'datapath'
     # column will contain the local filenames where the data can
     # be found.
-    .usr_dat <- input$usr_file
-    if (is.null(.usr_dat))
+    .usr_dat <- reactData$usr_bedgraph
+    if (is.null(.usr_dat)){
       return(NULL)
-
-    bed <- read.table(.usr_dat$datapath)
-    bed
+    } else {
+      .usr_dat
+    }
   })
 
- #plot_data_input <- reactiveValues(
-#      current_dataset = input$select_dataset,
-#      current_chrom = input$select_chrom
-#  )
+    # generate datatable for visualization
+    output$usr_beddata <- DT::renderDataTable({
+      # input$file1 will be NULL initially. After the user selects
+      # 'size', 'type', and 'datapath' columns. The 'datapath'
+      # column will contain the local filenames where the data can
+      # be found.
+      .usr_dat <- reactData$usr_bed
+      if (is.null(.usr_dat)){
+        return(NULL)
+      } else {
+        .usr_dat
+      }
+    })
+
+    output$usr_coverage = renderPlot({
+
+      selected_bedgraph <- reactData$usr_bedgraph
+
+      if(input$tx_position == "TSS"){
+        tx_pos <- reactData$usr_bed %>%
+          filter(strand == '+') %>%
+          mutate(end = start + 1)
+      } else {
+        tx_pos <- reactData$usr_bed %>%
+          filter(strand == '+') %>%
+          mutate(start = end - 1)
+      }
+
+      if(!"dataset" %in% colnames(selected_bedgraph)){
+        selected_bedgraph$dataset <- "user_data"
+      }
+      plot_usr_metagene(tx_pos, selected_bedgraph, genome,
+                    win_size = input$usr_window,
+                    region_size = input$usr_region)
+    })
+
+})
+
+
 
 
   output$coverage = renderPlot({

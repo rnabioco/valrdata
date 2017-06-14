@@ -40,6 +40,27 @@ plot_metagene <- function(x, y, genome, win_size, region_size){
     theme_bw()
 }
 
+plot_usr_metagene <- function(x, y, genome, win_size, region_size){
+
+  x <- x %>%
+    bed_slop(genome, both = region_size) %>%
+    bed_makewindows(genome, win_size)
+
+  res <- bed_map(x, y, sums = sum(value), dataset = first(dataset)) %>%
+    group_by(dataset, .win_id) %>%
+    filter(sums != "NA") %>%
+    summarize(means = mean(sums, na.rm = T), sds = sd(sums, na.rm = T))
+
+  x_labels <- pretty(-region_size:region_size, n = 11)
+  x_breaks <- seq(1, length(res$.win_id), length.out = length(x_labels))
+  sd_limits <- aes(ymax = means + sds, ymin = means - sds)
+
+  ggplot(res, aes(x = .win_id, y = means, color = dataset)) +
+    geom_point() + geom_pointrange(sd_limits) +
+    scale_x_continuous(labels = x_labels, breaks = x_breaks) +
+    xlab('Position\n(bp from TSS)') + ylab('Signal') +
+    theme_bw()
+}
 # -----------------------------------------------------------------------
 
 # options for saving from datatable

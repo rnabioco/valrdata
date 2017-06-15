@@ -81,5 +81,6 @@ savingOptions <- list(
     text = 'Download'
   )),
   list(orderClasses = TRUE),
-  lengthMenu = list(c(10, 25, -1), c('10', '25', 'All'))
+  lengthMenu = list(c(5, 10, 25, -1), c('5', '10', '25', 'All')),
+  pageLength = 5
 )

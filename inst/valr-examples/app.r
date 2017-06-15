@@ -35,7 +35,7 @@ ui <- dashboardPage(
 
   dashboardHeader(title = "valr-examples", titleWidth = 150),
   dashboardSidebar(
-    width = 150,
+    width = 200,
     id="",
     ## the following javascript fixes an error whereby tabs can only be clicked once
     tags$head(
@@ -60,9 +60,9 @@ ui <- dashboardPage(
           )
         )
       ),
-    menuItem("Data Table", tabName = "table", icon = icon("table")),
-    menuItem("Upload data", tabName = "usr_data", icon = icon("table")),
-    menuItem("Metagene Plot", tabName =  "plot", icon = icon("signal", lib = "glyphicon"), selected = T)
+  #  menuItem("Data Table", tabName = "table", icon = icon("table")),
+    menuItem("Metagene Plot", tabName =  "plot", icon = icon("signal", lib = "glyphicon"), selected = T),
+    menuItem("User Custom Metagene Plot", tabName = "usr_data", icon =  icon("signal", lib = "glyphicon"))
   ),
   dashboardBody(
     tags$head(
@@ -85,18 +85,32 @@ ui <- dashboardPage(
         ),
 
       tabItem(tabName = "usr_data",
+        tags$h3("Generate a simple metagene from your own BED data"),
         fluidRow(
-          column(width = 6,
-                 box(
-                   tags$p("Bedgraph must be tab deliminated and contain 4 columns,\n
-                           a header line is allowed if it begins with #,\n
-                          gzipped files are allowed if they end in .gz"),
-
-                   fileInput("usr_bedgraph", "Select bedgraph File"),
-
+          box(column(width = 6,
+                   tags$h4("Input bedgraph"),
+                   tags$p("Bedgraph must be tab deliminated and contain 4 columns, \n
+                           a header line is allowed if it begins with #, \n
+                           gzipped files are allowed if they end in .gz, e.g.",
+                          pre(code(
+                              paste("chr1  11873  14409 1.0",
+                                    "chr1  14361  19759 2.0",
+                                    "chr1  14406  29370 1.5",
+                                    "chr1  34610  36081 2.5", sep = "\n")
+                   ))),
+                   fileInput("usr_bedgraph", "Select bedgraph File")
+                 ),
+              column(width = 6,
+                   tags$h4("Input bed"),
                    tags$p("Input gene annotations should be in BED format. \n
-                          The TSS and TES will be determined based on the start and end values"),
-
+                          The TSS and TES will be determined based on the start and end values, e.g.",
+                          pre(code(
+                            paste("chr1  59486147  59553919  LINC01358 0 +",
+                                  "chr8  67474409  67525484  MYBL1 0 -",
+                                  "chr9  42493516  42498676  GXYLT1P3  0 +",
+                                  "chr19  6210391 6279959 MLLT1 0 -",
+                                  sep = "\n")
+                          ))),
                    fileInput("usr_bed", "Select BED File containing genes"),
 
                    numericInput("n_fields", "Number of fields in BED file:", 3, min = 3, max = 100),
@@ -104,20 +118,10 @@ ui <- dashboardPage(
                        "file_load_Btn",
                        "Load & Analyze",
                        class = "btn-primary"
-                   ),
-                   width = 12
+                   )
                  )
-              ),
-          column(width= 6,
-                 box(selectInput("tx_position",
-                                  "Region to plot",
-                                  c("TSS",
-                                    "TES"), selected = "TSS"),
-                      sliderInput("usr_window", "Window Size:", 100, 1000, 200),
-                      sliderInput("usr_region", "Region Size:", 2500, 20000, 10000),
-                      width = 12
-                  )
-             )
+              , width = 12
+              )
         ),
 
         fluidRow(
@@ -130,10 +134,25 @@ ui <- dashboardPage(
           ),
 
         fluidRow(
-          title = "Coverage Plot",
-          plotOutput("usr_coverage"),
-          width = 12
-        )),
+          column(width = 3,
+                 box(selectInput("tx_position",
+                                 "Region to plot",
+                                 c("TSS",
+                                   "TES"), selected = "TSS"),
+                     sliderInput("usr_window", "Window Size:", 100, 1000, 200),
+                     sliderInput("usr_region", "Region Size:", 2500, 20000, 10000),
+                     width = 12
+                 )
+          ),
+          column(width = 9,
+                 box(
+                   title = "Coverage Plot",
+                   plotOutput("usr_coverage"),
+                   width = 12
+                 )
+          )
+        )
+      ),
 
       tabItem(tabName = "plot",
         fluidRow(
@@ -230,13 +249,19 @@ server <- function(input, output) {
     # 'size', 'type', and 'datapath' columns. The 'datapath'
     # column will contain the local filenames where the data can
     # be found.
-    .usr_dat <- reactData$usr_bedgraph
-    if (is.null(.usr_dat)){
-      return(NULL)
-    } else {
-      .usr_dat
-    }
-  })
+      .usr_dat <- reactData$usr_bedgraph
+      if (is.null(.usr_dat)){
+        return(NULL)
+      } else {
+        .usr_dat
+      }
+    },
+    options = savingOptions,
+    filter = 'top',
+    style = 'bootstrap',
+    selection = list(mode = 'single',
+                   target = 'row'),
+    rownames = FALSE)
 
     # generate datatable for visualization
     output$usr_beddata <- DT::renderDataTable({
@@ -244,13 +269,19 @@ server <- function(input, output) {
       # 'size', 'type', and 'datapath' columns. The 'datapath'
       # column will contain the local filenames where the data can
       # be found.
-      .usr_dat <- reactData$usr_bed
-      if (is.null(.usr_dat)){
-        return(NULL)
-      } else {
-        .usr_dat
-      }
-    })
+        .usr_dat <- reactData$usr_bed
+        if (is.null(.usr_dat)){
+          return(NULL)
+        } else {
+          .usr_dat
+        }
+      },
+      options = savingOptions,
+      filter = 'top',
+      style = 'bootstrap',
+      selection = list(mode = 'single',
+                     target = 'row'),
+      rownames = FALSE)
 
     output$usr_coverage = renderPlot({
 

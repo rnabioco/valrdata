@@ -156,6 +156,14 @@ ui <- dashboardPage(
 
       tabItem(tabName = "plot",
         fluidRow(
+          tags$h3("Plot DnaseI hypersensitivity data from multiple tissues "),
+          tags$p("DNaseI hypersensitivity data was taken from ",
+                 tags$a(href="www.sciencemag.org/content/337/6099/1190.short",
+                        "Maurano et al. Science. 2012"),
+                 " and includes data from multiple human tissues"),
+          tags$p("Select chromosomes and datasets to plot on the left. Muliple datasets can be selected.",
+                 "The BED data used to generate the plots is loaded as an R object ",
+                        span(code("valrdata::dnase_data"))),
           column(width = 4,
               box(
                 title = "Controls",
